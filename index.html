@@ -174,7 +174,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">keep</p>
+        <p class="site-subtitle">keep studing</p>
       
   </div>
 
@@ -272,7 +272,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://BackToHappyBear.github.io/2017/04/06/小试身手/">
+    <link itemprop="mainEntityOfPage" href="http://BackToHappyBear.github.io/2017/04/06/初窥双向数据绑定--Object.defineProperty()/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xuan">
@@ -294,7 +294,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/04/06/小试身手/" itemprop="url">
+                <a class="post-title-link" href="/2017/04/06/初窥双向数据绑定--Object.defineProperty()/" itemprop="url">
                   初窥双向数据绑定--Object.defineProperty()
                 </a>
               
@@ -371,50 +371,21 @@
       
         
           
-            <p>之前再面向对象模糊的听过这个属性，但没有深究，但是 <code>vue</code> 实现双向数据绑定用到了这个属性，那还是有必要研究一下。</p>
-<h3 id="双向数据绑定的实现方式"><a href="#双向数据绑定的实现方式" class="headerlink" title="双向数据绑定的实现方式"></a>双向数据绑定的实现方式</h3><p>我理解的双向数据绑定就是把 <code>view</code> 层与   <code>model</code> 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。</p>
-<ul>
-<li>实现方式有三种：<ul>
-<li>脏检查</li>
-<li>观察机制</li>
-<li>封装属性访问器</li>
-</ul>
-</li>
-</ul>
-<h3 id="属性访问器"><a href="#属性访问器" class="headerlink" title="属性访问器"></a>属性访问器</h3><p>直接上代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> mathObj = &#123;</div><div class="line">    <span class="attr">constants</span>: &#123;</div><div class="line">        <span class="string">"pi"</span>: <span class="number">3.14</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">areaOfCircle</span>: <span class="function"><span class="keyword">function</span>(<span class="params">radius</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.constants.pi*radius*radius;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面是一个用于求圆面积的对象，如果此时其中的 <code>pi</code> 值改变了，作用也就消失了，所以要保证其值无法被修改。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> mathObj = &#123;</div><div class="line">    <span class="attr">constants</span>: &#123;&#125;,</div><div class="line">    <span class="attr">areaOfCircle</span>: <span class="function"><span class="keyword">function</span>(<span class="params">radius</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.constants.pi*radius*radius;</div><div class="line">    &#125;</div><div class="line">&#125; </div><div class="line"> </div><div class="line"><span class="built_in">Object</span>.defineProperty(mathObj.constants, <span class="string">"pi"</span>, &#123;</div><div class="line">    <span class="attr">value</span>: <span class="number">3.14</span>,</div><div class="line">    <span class="attr">writable</span>: <span class="literal">false</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line">mathObj.constants.pi = <span class="number">3</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(mathObj.constants.pi);  <span class="comment">// 3.14</span></div></pre></td></tr></table></figure></p>
-<p>代码很明了，看看 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="external">MDN</a> 上的文档，<code>Object.defineProperty(obj, prop, descriptor)</code>，它有三个参数：</p>
-<ul>
-<li>obj：要在其上定义属性的对象</li>
-<li>prop：要定义或修改的属性的名称</li>
-<li><p>descriptor: 定义或修改属性的描述符，这个对象又有很多属性</p>
-<ul>
-<li>configurable：<br>默认为 <code>false</code>。 当且仅当该属性描述符的类型可以被改变并且该属性可以从对应对象中删除时。</li>
-<li>enumerable：<br>默认为 <code>false</code>。 当且仅当该属性在枚举相应对象上的属性时显示。</li>
-<li>value：<br>默认为 <code>undefined</code>。与该属性相关联的值。可以是任何有效的JavaScript值（数字，对象，函数等）。</li>
-<li>writable：<br>默认为 <code>false</code>。 当且仅当与属性相关联的值可以使用赋值运算符进行更改。<br>访问器描述符还具有以下可选键：</li>
-<li>get：<br>默认为undefined。一个功能，作为一个吸气剂的财产，或undefined如果没有吸气剂。函数返回值将被用作属性的值。</li>
-<li>set：<br>默认为undefined。作为财产的设定者的功能，或者undefined没有设定者。该函数将仅接收参数赋值给该属性的新值。</li>
-</ul>
-</li>
-<li><p>返回值：传递给函数的对象</p>
-</li>
-</ul>
-<p>谷歌翻译的有些还是不太靠谱啊，还好属性名都是比较语义化的，但理解起来还需要查一下其他的资料了。</p>
-<p>这是他们的默认值，从上到下捋一遍：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    configurable: false,</div><div class="line">    enumerable: false,</div><div class="line">    writable: false,</div><div class="line">    value: null,</div><div class="line">    set: undefined,</div><div class="line">    get: undefined</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>1、<code>configurable</code>，是否可以配置。包括是否可以删除属性、修改 <code>writable</code>、<code>enumerable</code>、<code>configurable</code>的属性值。<br>2、 <code>enumerable</code>，是否可枚举，即是否能通过 <code>for...in</code> 遍历到<br>3、 <code>writable</code>,是否能被重写<br>4、<code>value</code>,属性的默认值<br>5、<code>set</code>, 这俩被翻译得跑偏的很，可以理解为重写器，一旦属性被重新复制，此方法被自动调用（重点）<br>6、 <code>get</code>，同上，读取器(重点)</p>
-<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><ul>
-<li>兼容性：IE8及其以下不兼容</li>
-<li>不能对同一个属性出现两种存取访问控制：即如果用了 <code>value</code> 设置了默认值，就不能用 <code>set</code> 和 <code>get</code> 设置和获取值。(如果此处改成 <code>writable</code> 也会报错)</li>
-<li>Hack：如果传入的第二个参数属性是一个数组，并设置了其不可写，数组名是不会变的，但其里面的值是可以通过 <code>push</code> 进去的。</li>
-</ul>
-<h3 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h3><p>回头再来看看 <code>get</code> 和 <code>set</code>,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var obj = &#123;&#125;,</div><div class="line">    value;</div><div class="line">Object.defineProperty(obj,&apos;number&apos;,&#123;</div><div class="line">  set:function(newValue)&#123;</div><div class="line">    console.log(&apos;赋给我的值为&apos;+newValue);</div><div class="line">  &#125;,</div><div class="line">  get:function()&#123;</div><div class="line">    console.log(&apos;不给取！&apos;)</div><div class="line">    return &apos;nothing&apos;;</div><div class="line">  &#125;,</div><div class="line">  enumerable : true,</div><div class="line">  configurable : true</div><div class="line">&#125;)</div><div class="line">obj.number = 1; // &apos;赋给我的值为&apos;1</div><div class="line">console.log(obj.number); </div><div class="line">// &apos;不给取&apos;</div><div class="line">// &apos;nothing&apos;</div></pre></td></tr></table></figure></p>
-<p>这里说明了，对于这个对象赋值或取值的过程，都会相应的触发相应 <code>set</code> 和 <code>get</code> 的函数,思维是不是被打开了，再看看下面这个：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">var bValue;</div><div class="line">var o = &#123;&#125;;</div><div class="line">Object.defineProperty(o, &quot;b&quot;, &#123;</div><div class="line">  get : function()&#123;</div><div class="line">    return bValue;</div><div class="line">  &#125;,</div><div class="line">  set : function(newValue)&#123;</div><div class="line">    bValue = newValue;</div><div class="line">  &#125;,</div><div class="line">  enumerable : true,</div><div class="line">  configurable : true</div><div class="line">&#125;);</div><div class="line"></div><div class="line">o.b = 38;  </div><div class="line"></div><div class="line">// The value of o.b is now always identical to bValue, unless o.b is redefined</div></pre></td></tr></table></figure></p>
-<p><code>MDN</code> 上的原例子，它还表示了 <code>o.b</code> 与 <code>bValue</code> 一致了，除非 <code>o.b</code>改变了。那么再测试一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">bValue = 39;  // 39</div><div class="line">o.b   // 39</div><div class="line"></div><div class="line">o.b = 40;</div><div class="line">bValue;  // 40</div></pre></td></tr></table></figure>
-<p>哦~~~  此时的 <code>bValue</code> 已经与 <code>o.b</code> 绑定起来了,虽然没有看 <code>Vue</code> 的源码实现，但是通过这几个例子已经有点眉目了，初窥门径的目的已经达成。</p>
+          之前再面向对象模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。
+双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。
 
-          
+实现方式有三种：
+脏检查
+观察机制
+封装
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/04/06/初窥双向数据绑定--Object.defineProperty()/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -533,17 +504,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/04/06/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -631,10 +600,10 @@
             
             
             <div class="site-state-item site-state-categories">
-              
+              <a href="/categories/index.html">
                 <span class="site-state-item-count">1</span>
                 <span class="site-state-item-name">分类</span>
-              
+              </a>
             </div>
           
 
@@ -642,10 +611,10 @@
             
             
             <div class="site-state-item site-state-tags">
-              
+              <a href="/tags/index.html">
                 <span class="site-state-item-count">1</span>
                 <span class="site-state-item-name">标签</span>
-              
+              </a>
             </div>
           
 
