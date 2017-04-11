@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="之前再面向对象模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;#123">
+<meta name="description" content="之前在面向对象的学习中模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;">
 <meta name="keywords" content="双向数据绑定 vue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="初窥双向数据绑定--Object.defineProperty()">
 <meta property="og:url" content="http://BackToHappyBear.github.io/2017/04/06/初窥双向数据绑定--Object.defineProperty()/index.html">
 <meta property="og:site_name" content="Xuan's Blog">
-<meta property="og:description" content="之前再面向对象模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;#123">
-<meta property="og:updated_time" content="2017-04-11T01:37:33.059Z">
+<meta property="og:description" content="之前在面向对象的学习中模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;">
+<meta property="og:updated_time" content="2017-04-11T07:44:30.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初窥双向数据绑定--Object.defineProperty()">
-<meta name="twitter:description" content="之前再面向对象模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;#123">
+<meta name="twitter:description" content="之前在面向对象的学习中模糊的听过这个属性，但没有深究，但是 vue 实现双向数据绑定用到了这个属性，那还是有必要研究一下。 双向数据绑定的实现方式我理解的双向数据绑定就是把 view 层与   model 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。  实现方式有三种： 脏检查 观察机制 封装属性访问器    属性访问器参数解析直接上代码12345678var mathObj = &amp;">
 
 
 
@@ -366,7 +366,7 @@
       
 
       
-        <p>之前再面向对象模糊的听过这个属性，但没有深究，但是 <code>vue</code> 实现双向数据绑定用到了这个属性，那还是有必要研究一下。</p>
+        <p>之前在面向对象的学习中模糊的听过这个属性，但没有深究，但是 <code>vue</code> 实现双向数据绑定用到了这个属性，那还是有必要研究一下。</p>
 <h3 id="双向数据绑定的实现方式"><a href="#双向数据绑定的实现方式" class="headerlink" title="双向数据绑定的实现方式"></a>双向数据绑定的实现方式</h3><p>我理解的双向数据绑定就是把 <code>view</code> 层与   <code>model</code> 层的数据关联起来，任何一方发生变化会影响另一方相应的变化。</p>
 <ul>
 <li>实现方式有三种：<ul>
@@ -507,6 +507,12 @@
           
   <div class="comments" id="comments">
     
+      <div id="uyan_frame"></div>
+
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js"></script>
+
+    
+
   </div>
 
 
@@ -774,11 +780,30 @@
 
 
   
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2130682"></script>
+      <!-- UY END -->
+    
+  
 
 
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 
