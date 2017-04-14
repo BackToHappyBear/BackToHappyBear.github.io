@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://BackToHappyBear.github.io/"/>
-  <updated>2017-04-11T07:44:30.553Z</updated>
+  <updated>2017-04-13T16:37:57.409Z</updated>
   <id>http://BackToHappyBear.github.io/</id>
   
   <author>
@@ -14,6 +14,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>初窥angular的双向数据绑定</title>
+    <link href="http://BackToHappyBear.github.io/2017/04/13/angular%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%8E%9F%E7%90%86/"/>
+    <id>http://BackToHappyBear.github.io/2017/04/13/angular双向数据绑定的原理/</id>
+    <published>2017-04-13T15:23:46.364Z</published>
+    <updated>2017-04-13T16:37:57.409Z</updated>
+    
+    <content type="html"><![CDATA[<p>简单直接，自问自答。</p>
+<h3 id="如何实现双向数据绑定？"><a href="#如何实现双向数据绑定？" class="headerlink" title="如何实现双向数据绑定？"></a>如何实现双向数据绑定？</h3><ul>
+<li><p>在这之前先了解一下 <code>$watch</code>：</p>
+<ul>
+<li><code>$scope.$watch( watchExp, listener, objectEquality)</code></li>
+<li>三个属性分别代表：监视的目标，变化时执行的函数（2个参数代表：变化后的值与之前的值），监视的是一个变量还是一个对象。</li>
+</ul>
+</li>
+<li><p>举例说明：</p>
+<ul>
+<li>在视图中用表达式绑定了 <code></code>,那么 <code>angular</code> 就会把这个变量添加到<code>watch list</code>队列中，然后通过 <code>$digest</code> 或 <code>$apply</code> 去调用这个队列中的值比较前后是否发生了变化，也就是所说的 <code>dirty-checking</code>，然后渲染到视图中。</li>
+</ul>
+</li>
+</ul>
+<h3 id="什么时候触发脏检查？"><a href="#什么时候触发脏检查？" class="headerlink" title="什么时候触发脏检查？"></a>什么时候触发脏检查？</h3><ul>
+<li>DOM事件</li>
+<li>XHR事件</li>
+<li>Location变化</li>
+<li>Timer事件</li>
+<li>执行 <code>$gigest()</code> 或 <code>$apply()</code><ul>
+<li>前者是从该 <code>scope</code> 和 其子 <code>scope</code>开始轮询，后者是从顶层的 <code>$rootScope</code> 开始轮询。</li>
+</ul>
+</li>
+</ul>
+<h3 id="脏检查执行几次？"><a href="#脏检查执行几次？" class="headerlink" title="脏检查执行几次？"></a>脏检查执行几次？</h3><p>至少两次，第二次执行的目的是检测第一次执行后，其数据有没有影响别的属性值，如果有那么就会再次执行一次，如果连续触发了10次，那么 <code>angular</code> 会认为你的逻辑错误而报错。所以如果监视队列有很多值，轮询检查会消耗大量性能，这也是 <code>angular</code> 性能乏力的根本原因。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>这里只是简略的了解 <code>angular</code> 的双向数据绑定，其内部具体的实现就不研究了，当然针对其优化的方法也有很多，但并不能阻止其被后继者超越。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;简单直接，自问自答。&lt;/p&gt;
+&lt;h3 id=&quot;如何实现双向数据绑定？&quot;&gt;&lt;a href=&quot;#如何实现双向数据绑定？&quot; class=&quot;headerlink&quot; title=&quot;如何实现双向数据绑定？&quot;&gt;&lt;/a&gt;如何实现双向数据绑定？&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在这之前先了解
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://BackToHappyBear.github.io/categories/JavaScript/"/>
+    
+    
+      <category term="双向数据绑定 angular" scheme="http://BackToHappyBear.github.io/tags/%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A-angular/"/>
+    
+  </entry>
   
   <entry>
     <title>初窥双向数据绑定--Object.defineProperty()</title>
@@ -77,33 +127,6 @@
     
     
       <category term="双向数据绑定 vue" scheme="http://BackToHappyBear.github.io/tags/%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A-vue/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://BackToHappyBear.github.io/2017/04/06/hello-world/"/>
-    <id>http://BackToHappyBear.github.io/2017/04/06/hello-world/</id>
-    <published>2017-04-06T08:44:27.008Z</published>
-    <updated>2017-04-06T08:44:27.016Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-    
-    </summary>
-    
     
   </entry>
   
